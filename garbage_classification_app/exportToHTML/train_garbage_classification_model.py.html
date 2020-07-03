@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>train_garbage_classification_model.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080; font-style: italic;}
+.s1 { color: #000000;}
+.s2 { color: #0000ff;}
+.s3 { color: #000080; font-weight: bold;}
+.s4 { color: #008080; font-weight: bold;}
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+train_garbage_classification_model.py</font>
+</center></td></tr></table>
+<pre><span class="s0"># hyperparameters</span>
+<a name="l34"><span class="ln">34   </span></a>base_learning_rate = <span class="s2">0.0001</span>
+<a name="l35"><span class="ln">35   </span></a>opt = optimizers.SGD(lr=<span class="s2">1e-3</span>, decay=<span class="s2">1e-6</span>, momentum=<span class="s2">0.9</span>, nesterov=<span class="s3">True</span>)
+<a name="l36"><span class="ln">36   </span></a>
+<a name="l37"><span class="ln">37   </span></a>new_xception_model.compile(optimizer=opt,
+<a name="l38"><span class="ln">38   </span></a>                           loss=<span class="s4">'sparse_categorical_crossentropy'</span>,
+<a name="l39"><span class="ln">39   </span></a>                           metrics=[<span class="s4">'accuracy'</span>])
+<a name="l40"><span class="ln">40   </span></a>
+<a name="l41"><span class="ln">41   </span></a><span class="s0"># data preparation and augmentation</span>
+<a name="l42"><span class="ln">42   </span></a>train_data_gen = ImageDataGenerator(
+<a name="l43"><span class="ln">43   </span></a>    rescale=<span class="s2">1. </span>/ <span class="s2">255</span>,
+<a name="l44"><span class="ln">44   </span></a>    shear_range=<span class="s2">0.2</span>,
+<a name="l45"><span class="ln">45   </span></a>    zoom_range=<span class="s2">0.2</span>,
+<a name="l46"><span class="ln">46   </span></a>    horizontal_flip=<span class="s3">True</span>)
+<a name="l47"><span class="ln">47   </span></a>
+<a name="l48"><span class="ln">48   </span></a>valid_data_gen = ImageDataGenerator(rescale=<span class="s2">1. </span>/ <span class="s2">255</span>)
+<a name="l49"><span class="ln">49   </span></a>
+<a name="l50"><span class="ln">50   </span></a>train_generator = train_data_gen.flow_from_directory(
+<a name="l51"><span class="ln">51   </span></a>    directory=<span class="s4">'training_data'</span>,
+<a name="l52"><span class="ln">52   </span></a>    target_size=img_dim,
+<a name="l53"><span class="ln">53   </span></a>    color_mode=<span class="s4">&quot;rgb&quot;</span>,
+<a name="l54"><span class="ln">54   </span></a>    batch_size=batch_size,
+<a name="l55"><span class="ln">55   </span></a>    class_mode=<span class="s4">&quot;sparse&quot;</span>,
+<a name="l56"><span class="ln">56   </span></a>    shuffle=<span class="s3">True</span>,
+<a name="l57"><span class="ln">57   </span></a>    seed=<span class="s2">42</span>
+<a name="l58"><span class="ln">58   </span></a>)
+<a name="l59"><span class="ln">59   </span></a>
+<a name="l60"><span class="ln">60   </span></a>valid_generator = valid_data_gen.flow_from_directory(
+<a name="l61"><span class="ln">61   </span></a>    directory=<span class="s4">'validation_data'</span>,
+<a name="l62"><span class="ln">62   </span></a>    target_size=img_dim,
+<a name="l63"><span class="ln">63   </span></a>    color_mode=<span class="s4">&quot;rgb&quot;</span>,
+<a name="l64"><span class="ln">64   </span></a>    batch_size=batch_size,
+<a name="l65"><span class="ln">65   </span></a>    class_mode=<span class="s4">&quot;sparse&quot;</span>,
+<a name="l66"><span class="ln">66   </span></a>    shuffle=<span class="s3">True</span>,
+<a name="l67"><span class="ln">67   </span></a>    seed=<span class="s2">42</span>
+<a name="l68"><span class="ln">68   </span></a>)
+<a name="l69"><span class="ln">69   </span></a>
+<a name="l70"><span class="ln">70   </span></a><span class="s0"># model training</span>
+<a name="l71"><span class="ln">71   </span></a>garbage_recognition_model = new_xception_model.fit_generator(generator=train_generator,
+<a name="l72"><span class="ln">72   </span></a>                                                             validation_data=valid_generator,
+<a name="l73"><span class="ln">73   </span></a>                                                             epochs=epochs,
+<a name="l74"><span class="ln">74   </span></a>                                                             callbacks=[checkpoint, tensorboard_callback, earlyStop]
+<a name="l75"><span class="ln">75   </span></a>                                                             )
+<a name="l76"><span class="ln">76   </span></a></pre>
+</body>
+</html>
