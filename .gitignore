@@ -1,0 +1,5 @@
+*.hdf5
+/garbage_classification_app/training_data/*
+/garbage_classification_app/validation_data/*
+/garbage_classification_app/test_data/*
+/Garbage classification/*
